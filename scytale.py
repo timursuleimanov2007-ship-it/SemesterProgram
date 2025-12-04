@@ -1,58 +1,42 @@
-def integerSafeInput():
-    while True:
-        try:
-            anyInteger = int(input("Введите переменную (int) >> "))
-            return anyInteger
-
-        except Exception as e:
-            print(f"Ошибка! Подробнее: {e}")
+import math
 
 
+"""
+
+Line    —   строка с текстом, сообщение пользователя;
+stick   —   ключ-диаметр скиталы, число столбцов;
+band    —   лента, список символов, из которых состоит строка с текстом;
+far     —   число строк;
+pear    —   номер символа в ленте, которая была получена из строки с текстом пользователя;
+forest  —   строка для записи результата шифрования;
+berry   —   символ из двумерного массива.
+
+"""
 
 
-
-def scytale_encrypt(text, diameter):
-    if not text or diameter <= 0:
-        return text
-        
-    rows = math.ceil(len(text) / diameter)
-    matrix = [[' ' for _ in range(diameter)] for _ in range(rows)]
-
-    index = 0
-    for i in range(rows):
-        for j in range(diameter):
-            if index < len(text):
-                matrix[i][j] = text[index]
-                index += 1
-
-    result = []
-    for j in range(diameter):
-        for i in range(rows):
-            result.append(matrix[i][j])
-    
-    return ''.join(result).rstrip()
-
-
+def make(Line: str, stick: int):
+    band = list(Line)
+    far = math.ceil(len(Line) / stick)
+    scytale = []
+    pear = 0
+    for i in range(far):
+        honey = []
+        for j in range(stick):
+            if pear < len(band):
+                honey.append(band[pear])
+                pear += 1
+            else:
+                honey.append('')
+        scytale.append(honey)
+    forest = ""
+    for a in range(stick):
+        for b in range(far):
+            berry = scytale[b][a]
+            if berry:
+                forest += berry
+    return forest
 
 
-
-def scytale_decrypt(encrypted_text, diameter):
-    if not encrypted_text or diameter <= 0:
-        return encrypted_text
-        
-    rows = math.ceil(len(encrypted_text) / diameter)
-    matrix = [[' ' for _ in range(diameter)] for _ in range(rows)]
-    
-    index = 0
-    for j in range(diameter):
-        for i in range(rows):
-            if index < len(encrypted_text):
-                matrix[i][j] = encrypted_text[index]
-                index += 1
-    
-    result = []
-    for i in range(rows):
-        for j in range(diameter):
-            result.append(matrix[i][j])
-    
-    return ''.join(result).rstrip()
+def blue(Line: str, stick: int):
+    far = math.ceil(len(Line) / stick)
+    return far
