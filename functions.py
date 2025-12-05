@@ -10,6 +10,10 @@ class NullValueError(Exception):
     """Ошибка нулевого значения."""
     pass
 
+class LatinAlphabetError(Exception):
+    """Ошибка нелатинских символов."""
+    pass
+
 
 
 def safe(Out: str):
@@ -60,10 +64,34 @@ def password(Out: str):
                 raise EmptyLineError
             elif (len(Line) < 10):
                 raise NotEnoughSymbolsError
+            elif (not all(ord(c) < 128 for c in Line)):
+                raise LatinAlphabetError
             return Line
         except EmptyLineError as elementary:
             print(f"\nОшибка! Подробнее: {elementary}")
         except NotEnoughSymbolsError as nest:
             print(f"\nОшибка! Подробнее: {nest}")
+        except LatinAlphabetError as grape:
+            print(f"\nОшибка! Подробнее: {grape}")
+        except Exception as execution:
+            print(f"\nОшибка! Подробнее: {execution}")
+
+
+
+
+def login(Out: str):
+    Line = ""
+    while True:
+        try:
+            Line = input(Out)
+            if (not Line):
+                raise EmptyLineError
+            elif (not all(ord(c) < 128 for c in Line)):
+                raise LatinAlphabetError
+            return Line
+        except EmptyLineError as elementary:
+            print(f"\nОшибка! Подробнее: {elementary}")
+        except LatinAlphabetError as grape:
+            print(f"\nОшибка! Подробнее: {grape}")
         except Exception as execution:
             print(f"\nОшибка! Подробнее: {execution}")
