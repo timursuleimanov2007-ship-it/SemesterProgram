@@ -1,3 +1,30 @@
+import secrets
+import hashlib
+import time
+import json
+import datetime
+
+
+
+
+"""
+
+safe        —   функция безопасного ввода строк;
+number      —   функция безопасного ввода чисел;
+cpassword   —   функция создания и проверки пароля;
+clogin      —   функция создания и проверки логина;
+new         —   функция создания нового пользователя;
+takeonly    —   функция подписи токена токеном;
+taketime    —   функция подписи токена хэшем токена и времени;
+takerequest —   функция подписи токена хэшем токена и тела запроса;
+takeall     —   функция подписи токена хэшем токена, времени и тела запроса;
+take        —   функция проверки логина и создания токена.
+
+"""
+
+
+
+
 class EmptyLineError(Exception):
     """Ошибка пустой строки."""
     pass
@@ -13,6 +40,11 @@ class NullValueError(Exception):
 class LatinAlphabetError(Exception):
     """Ошибка нелатинских символов."""
     pass
+
+class TakenLoginError(Exception):
+    """Ошибка занятого логина."""
+    pass
+
 
 
 
@@ -55,7 +87,7 @@ def number(Out: str):
 
 
 
-def password(Out: str):
+def cpassword(Out: str):
     Line = ""
     while True:
         try:
@@ -79,7 +111,7 @@ def password(Out: str):
 
 
 
-def login(Out: str):
+def clogin(Out: str):
     Line = ""
     while True:
         try:
@@ -95,3 +127,59 @@ def login(Out: str):
             print(f"\nОшибка! Подробнее: {grape}")
         except Exception as execution:
             print(f"\nОшибка! Подробнее: {execution}")
+
+
+
+
+def new(people: int, lgn: str, psswrd: str):
+    user = {"id": people + 1,
+            "login": lgn,
+            "password": psswrd
+    }
+    return user, people + 1
+
+
+
+
+def takeonly(token: str):
+    return token
+
+
+
+
+def taketime(token: str):
+    unixtime = str(int(time.time()))
+    final = token + unixtime
+    return hashlib.sha256(final.encode()).hexdigest()
+
+
+
+
+def takerequest(token: str, body: dict):
+    head = json.dumps(body, sort_keys = True)
+    final = token + head
+    return hashlib.sha256(final.encode()).hexdigest()
+
+
+
+
+def takeall(token: str, body: dict):
+    unixtime = str(int(time.time()))
+    head = json.dumps(body, sort_keys = True)
+    final = token + unixtime + head
+    return hashlib.sha256(final.encode()).hexdigest()
+
+
+
+
+def take(lgnlst: list[str], lgn: str, psswrd: str):
+    token = ""
+    if lgn in lgnlst:
+        raise TakenLoginError
+    token = secrets.token_hex(32)
+    return token
+
+
+
+
+def log(action: str, id: int, ):
