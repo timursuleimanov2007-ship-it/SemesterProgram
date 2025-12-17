@@ -1,0 +1,11 @@
+{
+  "users": {
+    "Tim": {
+      "id": 1,
+      "login": "Tim",
+      "password": "Tim2007___",
+      "token": "f46b58de6c0d6f824f086703114204d35d19d48a6c5a1ac4980f7b00380e0ba6"
+    }
+  },
+  "people": 1
+}

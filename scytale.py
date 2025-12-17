@@ -14,7 +14,7 @@ berry   —   символ из двумерного массива.
 """
 
 
-def make(Line: str, stick: int):
+async def make(Line: str, stick: int):
     band = list(Line)
     far = math.ceil(len(Line) / stick)
     scytale = []
@@ -37,6 +37,6 @@ def make(Line: str, stick: int):
     return forest
 
 
-def blue(Line: str, stick: int):
+async def blue(Line: str, stick: int):
     far = math.ceil(len(Line) / stick)
     return far

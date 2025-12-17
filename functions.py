@@ -3,6 +3,8 @@ import hashlib
 import time
 import json
 import datetime
+import requests
+import os
 
 
 
@@ -18,7 +20,7 @@ takeonly    —   функция подписи токена токеном;
 taketime    —   функция подписи токена хэшем токена и времени;
 takerequest —   функция подписи токена хэшем токена и тела запроса;
 takeall     —   функция подписи токена хэшем токена, времени и тела запроса;
-take        —   функция проверки логина и создания токена.
+take        —   функция создания токена.
 
 """
 
@@ -56,8 +58,8 @@ def safe(Out: str):
             if (not Line):
                 raise EmptyLineError
             return Line
-        except EmptyLineError as elementary:
-            print(f"\nОшибка! Подробнее: {elementary}")
+        except EmptyLineError:
+            print(f"\nОшибка! Подробнее: Строка не может быть пустой!")
         except Exception as execution:
             print(f"\nОшибка! Подробнее: {execution}")
 
@@ -76,18 +78,18 @@ def number(Out: str):
                 raise NullValueError
             return Number
         except ValueError as amphora:
-            print(f"\nОшибка! Подробнее: {amphora}")
-        except EmptyLineError as elementary:
-            print(f"\nОшибка! Подробнее: {elementary}")
-        except NullValueError as willow:
-            print(f"\nОшибка! Подробнее: {willow}")
+            print(f"\nОшибка! Подробнее: Неверное значение!")
+        except EmptyLineError:
+            print(f"\nОшибка! Подробнее: Строка не может быть пустой!")
+        except NullValueError:
+            print(f"\nОшибка! Подробнее: Значение не может быть нулём!")
         except Exception as execution:
             print(f"\nОшибка! Подробнее: {execution}")
 
 
 
 
-def cpassword(Out: str):
+def makepassword(Out: str):
     Line = ""
     while True:
         try:
@@ -98,20 +100,24 @@ def cpassword(Out: str):
                 raise NotEnoughSymbolsError
             elif (not all(ord(c) < 128 for c in Line)):
                 raise LatinAlphabetError
+            elif (not any(c.isdigit() for c in Line)):
+                raise ValueError("No numbers found. Need at least one.")
+            elif (not any(c in "!@#$%^&*()_+-=[]{}|;:,.<>?~" for c in Line)):
+                raise ValueError("No special characters found. Need at least one.")
             return Line
-        except EmptyLineError as elementary:
-            print(f"\nОшибка! Подробнее: {elementary}")
-        except NotEnoughSymbolsError as nest:
-            print(f"\nОшибка! Подробнее: {nest}")
-        except LatinAlphabetError as grape:
-            print(f"\nОшибка! Подробнее: {grape}")
+        except EmptyLineError:
+            print(f"\nОшибка! Подробнее: Строка не может быть пустой!")
+        except NotEnoughSymbolsError:
+            print(f"\nОшибка! Подробнее: Недостаточно символов!")
+        except LatinAlphabetError:
+            print(f"\nОшибка! Подробнее: Только латинские буквы!")
         except Exception as execution:
             print(f"\nОшибка! Подробнее: {execution}")
 
 
 
 
-def clogin(Out: str):
+def makelogin(Out: str):
     Line = ""
     while True:
         try:
@@ -122,25 +128,17 @@ def clogin(Out: str):
                 raise LatinAlphabetError
             return Line
         except EmptyLineError as elementary:
-            print(f"\nОшибка! Подробнее: {elementary}")
-        except LatinAlphabetError as grape:
-            print(f"\nОшибка! Подробнее: {grape}")
+            print(f"\nОшибка! Подробнее: Строка не может быть пустой!")
+        except LatinAlphabetError:
+            print(f"\nОшибка! Подробнее: Только латинские буквы!")
+        except TakenLoginError:
+            print(f"\nОшибка! Подробнее: Логин занят!")
         except Exception as execution:
             print(f"\nОшибка! Подробнее: {execution}")
 
 
 
-
-def new(people: int, lgn: str, psswrd: str):
-    user = {"id": people + 1,
-            "login": lgn,
-            "password": psswrd
-    }
-    return user, people + 1
-
-
-
-
+            
 def takeonly(token: str):
     return token
 
@@ -172,14 +170,37 @@ def takeall(token: str, body: dict):
 
 
 
-def take(lgnlst: list[str], lgn: str, psswrd: str):
+def take():
     token = ""
-    if lgn in lgnlst:
-        raise TakenLoginError
     token = secrets.token_hex(32)
     return token
 
 
 
 
-def log(action: str, id: int, ):
+def data(action: str, current_usrlst=None, current_people=0):
+    filename = "server_data.json"
+    if action == "save":
+        save_data = {
+            "users": current_usrlst if current_usrlst is not None else {},
+            "people": current_people
+        }
+        with open(filename, "w", encoding="utf-8") as f:
+            json.dump(save_data, f, ensure_ascii=False, indent=2)
+        print(f"Сохранено {len(current_usrlst) if current_usrlst else 0} пользователей")
+        return True
+    elif action == "load":
+        try:
+            with open(filename, "r", encoding="utf-8") as f:
+                loaded = json.load(f)
+            loaded_users = loaded.get("users", {})
+            loaded_people = loaded.get("people", len(loaded_users))
+            print(f"Загружено {len(loaded_users)} пользователей")
+            return loaded_users, loaded_people
+        except FileNotFoundError:
+            print("Файл данных не найден, начинаем с чистого листа")
+            return {}, 0
+        except Exception as e:
+            print(f"Ошибка загрузки: {e}")
+            return {}, 0
+    return None
