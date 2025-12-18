@@ -13,14 +13,19 @@ import os
 
 safe        —   функция безопасного ввода строк;
 number      —   функция безопасного ввода чисел;
-cpassword   —   функция создания и проверки пароля;
-clogin      —   функция создания и проверки логина;
+makepassword—   функция создания и проверки пароля;
+makelogin   —   функция создания и проверки логина;
 new         —   функция создания нового пользователя;
 takeonly    —   функция подписи токена токеном;
 taketime    —   функция подписи токена хэшем токена и времени;
 takerequest —   функция подписи токена хэшем токена и тела запроса;
 takeall     —   функция подписи токена хэшем токена, времени и тела запроса;
-take        —   функция создания токена.
+take        —   функция создания токена;
+data        —   функция работы с данными пользователей;
+loadusertexts — функция загрузки текстов пользователя;
+saveusertexts — функция сохранения текстов пользователя;
+loaduserhistory — функция загрузки истории пользователя;
+saveuserhistory — функция сохранения истории пользователя.
 
 """
 
@@ -138,6 +143,7 @@ def makelogin(Out: str):
 
 
 
+
             
 def takeonly(token: str):
     return token
@@ -204,3 +210,59 @@ def data(action: str, current_usrlst=None, current_people=0):
             print(f"Ошибка загрузки: {e}")
             return {}, 0
     return None
+
+
+
+
+def loadusertexts(user_id: int):
+    filename = f"texts_{user_id}.json"
+    try:
+        with open(filename, "r", encoding="utf-8") as f:
+            texts = json.load(f)
+        return texts
+    except FileNotFoundError:
+        return []
+    except Exception as e:
+        print(f"Ошибка загрузки текстов! Подробнее: {e}")
+        return []
+
+
+
+
+def saveusertexts(user_id: int, texts: list):
+    filename = f"texts_{user_id}.json"
+    try:
+        with open(filename, "w", encoding="utf-8") as f:
+            json.dump(texts, f, ensure_ascii=False, indent=2)
+        return True
+    except Exception as e:
+        print(f"Ошибка сохранения текстов! Подробнее: {e}")
+        return False
+
+
+
+
+def loaduserhistory(user_id: int):
+    filename = f"history_{user_id}.json"
+    try:
+        with open(filename, "r", encoding="utf-8") as f:
+            history = json.load(f)
+        return history
+    except FileNotFoundError:
+        return []
+    except Exception as e:
+        print(f"Ошибка загрузки истории! Подробнее: {e}")
+        return []
+
+
+
+
+def saveuserhistory(user_id: int, history: list):
+    filename = f"history_{user_id}.json"
+    try:
+        with open(filename, "w", encoding="utf-8") as f:
+            json.dump(history, f, ensure_ascii=False, indent=2)
+        return True
+    except Exception as e:
+        print(f"Ошибка сохранения истории! Подробнее: {e}")
+        return False

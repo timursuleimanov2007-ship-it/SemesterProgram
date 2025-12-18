@@ -1,0 +1,58 @@
+[
+  {
+    "time": "2025-12-18T15:15:37.798058",
+    "action": "registration",
+    "userid": 1,
+    "login": "Timur",
+    "details": {}
+  },
+  {
+    "time": "2025-12-18T15:16:56.483054",
+    "action": "addtext",
+    "userid": 1,
+    "login": "Timur",
+    "details": {
+      "textid": 1
+    }
+  },
+  {
+    "time": "2025-12-18T15:17:05.571867",
+    "action": "getalltexts",
+    "userid": 1,
+    "login": "Timur",
+    "details": {}
+  },
+  {
+    "time": "2025-12-18T15:17:14.497905",
+    "action": "encrypt",
+    "userid": 1,
+    "login": "Timur",
+    "details": {
+      "textid": 1,
+      "keyused": 3
+    }
+  },
+  {
+    "time": "2025-12-18T15:17:45.734867",
+    "action": "changepassword",
+    "userid": 1,
+    "login": "Timur",
+    "details": {
+      "passwordchanged": true
+    }
+  },
+  {
+    "time": "2025-12-18T15:18:17.200145",
+    "action": "gethistory",
+    "userid": 1,
+    "login": "Timur",
+    "details": {}
+  },
+  {
+    "time": "2025-12-18T15:18:26.110379",
+    "action": "logout",
+    "userid": 1,
+    "login": "Timur",
+    "details": {}
+  }
+]
